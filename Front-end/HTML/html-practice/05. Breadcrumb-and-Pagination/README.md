@@ -1,4 +1,4 @@
-<img width="309" alt="스크린샷 2020-09-24 오후 4 28 30" src="https://user-images.githubusercontent.com/45806836/94114206-fe11bb80-fe82-11ea-8533-585c21bdb7ff.png">  
+<img width="742" alt="스크린샷 2020-09-24 오후 4 39 31" src="https://user-images.githubusercontent.com/45806836/94115324-8775bd80-fe84-11ea-87c6-5f254db8bfaf.png">
 
 # Breadcrumb & Pagination
 
