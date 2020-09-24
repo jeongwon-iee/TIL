@@ -2,6 +2,7 @@
 
 ```html
 <button type=""> </button>
+```
       
 
 button의 필수 세가지 type은 button, submit, reset
