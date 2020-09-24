@@ -1,6 +1,4 @@
-<img width="291" alt="스크린샷 2020-09-24 오후 4 32 20" src="https://user-images.githubusercontent.com/45806836/94114595-85f7c580-fe83-11ea-95e6-d1464f51a298.png">
-
-
+<img width="549" alt="스크린샷 2020-09-24 오후 4 38 42" src="https://user-images.githubusercontent.com/45806836/94115254-6ad98580-fe84-11ea-84de-159f9f49c8d8.png">
 
 # 마크업
 
