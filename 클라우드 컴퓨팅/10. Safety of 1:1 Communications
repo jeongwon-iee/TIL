@@ -1,0 +1,76 @@
+# Safety of 1:1 Communications
+
+## point to point communications
+
+<img width="806" alt="스크린샷 2020-10-11 오후 7 54 11" src="https://user-images.githubusercontent.com/45806836/95676750-89b57700-0bfb-11eb-8315-bf975e6e3705.png">
+
+## one-way 1 (S → R)
+
+
+system buffer 크기가 threshold 이상이어도 synchronous하게 처리 될 것
+
+## one-way 2 (IS → R)
+
+
+Isend 하자마자 Wait했으니 blocking send와 같음. 1번 프로그램과 동일
+
+## one-way 3 (S → IR)
+
+
+Irecv 하자마자 Wait했으니 blocking recv와 같음. 1&2번 프로그램과 동일
+
+## one-way 4 (IS → IR)
+
+
+Isend 하자마자 Wait했으니 blocking send와 같음. 1번 프로그램과 동일
+
+Isend 하자마자 Wait했으니 blocking send와 같음. 1번 프로그램과 동일
+
+Wait 하기 전 할 일이 있으면 더 좋다~
+
+## both-way 1 (SR, SR)
+
+
+- 문제가 생기는 경우
+
+양방향 통신 시 시스템 버퍼의 크기가 작아 보내려는 데이터 크기가 더 크면, synchronous 모드로 전환, 상대방의 receive를 기다리게 됨.
+
+Send를 완료하지 못 해 두 프로세스 모두 deadlock
+
+## both-way 2 (ISR, ISR)
+
+
+Isend 후 바로 Wait == blocking send, 문제가 발생할 수 있음
+
+## both-way 3 (ISR, ISR)
+
+
+Isend를 하면 데이터가 모두 전송되지 않아도 바로 다음 문장을 실행할 수 있어 Recv로 넘어감 → 두 프로세스 모두 deadlock에 걸리지 않음
+
+## both-way 4 (RS, RS)
+
+
+
+blocking Receive를 해놓으니 두 프로세스 모두 데이터를 기다리고 있음
+
+## both-way 5 (IRS, IRS)
+
+
+
+Recv후 Send하지만 non-blocking으로 recv, initiate (받아야지~)하고 다음 문장 바로 실행, Send로 넘어간 후 wait 하니 안전
+
+## both-way 6 (SR, RS)
+
+
+
+blocking 모드지만 send 후 recv, recv 후 send 하니 문제가 없음.
+
+## both-way 7 (ISIR, ISIR)
+
+
+
+안전
+
+## Send & Receive를 한꺼번에 하기
+
+`MPI_Sendrecv`
