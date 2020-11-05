@@ -1,0 +1,285 @@
+# 지난 시간 배운 내용
+
+⇒ TCP는 loss를, UDP는 아무것도 support 하지 못 함
+
+저장된 걸 뽑아 오는 streaming ***Loss-sensitive (TCP)***
+
+실시간으로 전송되는 streaming ***Delay-sensitive (UDP)***
+
+### Process ID와 port number
+
+⇒ **transport layer에서 port number를 통해 application layer에서 communication 중인 application layer process를 찾아간다.**
+
+Process ID는 employ number, port number는 office number (한 프로세스가 여러 개의 포트를 열고 쓸 수 있다)
+
+**port number도 OS가 관리하는 자원**, transport layer가 보내주는 PDU 헤더에
+
+port number field size가 16bit → 2^16-1까지 표현 가능 → 65535까지
+
+---
+
+# 2.1 Web and HTTP
+
+Web은 loss-sensitive(문서가 정확히 와야 하기 때문) → TCP
+
+## HTTP overview
+
+### HTTP: HyperText Transfer Protocol
+
+⇒ Web(application layer application)의 application layer protocol
+
+Web page는 base HTML-file(Hypertext와 Object를 가리키는 URL들)로 구성
+
+*Hypertext: 문서 안에 또 다른 정보들을 url로 표시해 데이터베이스, 서버 등에서 가져옴 (클릭을 통해 다른 위치로 이동할 수 있는 비순차적 접근)*
+
+Client/Server model
+
+- Client: HTTP protocol로 request, receive하고 Objects를 **display**하는 browser
+- Server: HTTP request의 reponse로서 Object를 보내주는 Web server
+
+웹 브라우저가 웹 서버에 있는 정보를 가져와 사용자에게 display해줌. 모두 Http protocol을 통함
+
+## TCP connection
+
+loss-sensitive한 web document를 가져오기 위해 transport layer의 protocol TCP를 사용.
+
+HTTP message를 보내기 위해 TCP connection을 맺고(UDP는 바로 보냄)
+
+**TCP connection set up**: end system끼리 전용 소켓을 열어 dedicate
+
+(1) TCP connection set-up
+
+- server는 80 port를 listen
+- client가 server의 80번 포트로 TCP connection을 요청 (socket 생성)
+- server는 client가 보낸 TCP segment를 받고 accept ACK을 전송
+- server는 그 client만을 위한 전용 소켓을 생성, 80번 포트는 다시 listen
+
+⇒ Http가 TCP protocol을 사용하면 one-round trip 시간이 소요
+
+(2) HTTP message exchange
+
+- browser(HTTP client)와 Web server(HTTP server) 간의 application-layer protocol messages exchange : 전용 소켓으로
+
+(3) TCP connection closed
+
+- connection을 setup한 후 반드시 close 해야함
+
+***HTTP는 stateless***
+
+→ server는 past client requests에 대해 정보를 보관하지 않음
+
+- state를 유지하는 건 복잡함!
+
+## HTTP connections
+
+TCP를 이용해 안전한 정보가 오면 HTTP는 두 가지 모드로 작동이 가능
+
+TCP에 setup 해놓은 connection 자원(열어놓은 소켓, 버퍼)을 유지하느냐?
+
+### non-persistent HTTP
+
+맺어놓은 TCP connection으로 하나의 object 정보를 가져옴 → closed
+
+downloading multiple objects ⇒ multiple connections
+
+
+<img width="686" alt="스크린샷 2020-11-05 오후 3 48 31" src="https://user-images.githubusercontent.com/45806836/98207033-5ce84b80-1f7e-11eb-8d01-6fa309613a42.png">
+
+1a. server host의 IP주소를 찾은 후 connect, 80번 port로 접근
+
+2. client만을 위한 전용 TCP 소켓이 생성 됐고(buffer 등 자원 확정) 80번 port는 다른 connection을 위해 다시 listen
+
+3. client가 보낸 request에 대해 base html(text+urls)로 response
+
+
+<img width="681" alt="스크린샷 2020-11-05 오후 3 48 46" src="https://user-images.githubusercontent.com/45806836/98207050-65d91d00-1f7e-11eb-9809-b0691bf06d91.png">
+
+
+
+4. server는 response 후에 TCP connection을 close
+
+5. client가 열어보니 10개의 Object urls 발견
+
+6. 10개의 Object에 대해 0~5까지의 과정 반복
+
+<img width="697" alt="스크린샷 2020-11-05 오후 3 49 24" src="https://user-images.githubusercontent.com/45806836/98207098-7d180a80-1f7e-11eb-915e-3b3fb644fb2a.png">
+
+**RTT: 한 패킷이 end to end로 one round trip 하는데 소요되는 delay**
+
+time to transmit file: X bits/L (transmission delay)
+
+<img width="620" alt="스크린샷 2020-11-05 오후 3 49 39" src="https://user-images.githubusercontent.com/45806836/98207110-85704580-1f7e-11eb-911c-b00987d7ec32.png">
+
+response time per 1 object = TCP connection response + base html response + file transmission time = 2RTT
+
+⇒ response time: 2RTT + (2RTT)*10 = 20 RTTs
+
+- client browsers often open **parallel TCP connections**
+
+OS가 client가 한 번에 열 수 있는 TCP connection 수를 제한
+
+Ex. 한 번에 10 개를 열 수 있다 → 10 request & response at the same time 
+
+⇒ response time: 2RTT + (2RTT) = 4RTTs (**시험 문제)**
+
+ + 어느 한 시점에 client와 server에 열려있는 socket의 수: 10개
+
+Ex. 한 번에 3개를 열 수 있다 → 3 request & response at the same time
+
+⇒ response time: 2RTT + (2RTT)*4 = 10RTTs (**시험 문제)**
+
+ + 어느 한 시점에 client와 server에 열려있는 socket의 수: 3개
+
+### persistent HTTP
+
+multiple objects ⇒ can be sent over **single TCP connection**
+
+<img width="673" alt="스크린샷 2020-11-05 오후 3 49 58" src="https://user-images.githubusercontent.com/45806836/98207138-902ada80-1f7e-11eb-809f-ba760e220e2b.png">
+
+server가 response를 보낸 후에도 connection을 close 하지 않음 → 다음 client request에는 **이후의 TCP connection set-up time이 필요 X**
+
+⇒ response time: 2RTT + RTT = 3RTTs
+
+ + 어느 한 시점에 client와 server에 열려있는 socket의 수: 1개
+
+왜 2RTT 이후 열 번 보내지 않고 한 번 보냄?
+
+**HTTP pipelining:** HTTP request msgs are sent on a single TCP connection **without waiting for the responses**
+
+<img width="630" alt="스크린샷 2020-11-05 오후 3 50 08" src="https://user-images.githubusercontent.com/45806836/98207150-9620bb80-1f7e-11eb-8bea-6eee025a13e6.png">
+
+TCP의 sliding window에 의한 pipelining으로 server의 ACK 없이도 client의 sender buffer에서 server의 receiver buffer로 msgs가 한 번에 감
+
+## HTTP request message
+
+<img width="698" alt="스크린샷 2020-11-05 오후 3 50 22" src="https://user-images.githubusercontent.com/45806836/98207171-9f118d00-1f7e-11eb-98cb-7c13a93a040d.png">
+
+ - name of the file that is being retrieved in thie GET msg? index.html
+
+ - version of HTTP the client running? 1.1
+
+ - TCP Connection setup후 socket을 맺었는데 왜 Host명을 또 요청하는가?
+
+⇒ Receiver가 아닌 Proxy 서버와 TCP connection을 맺었을 수 있음. 이 msg가 Server가 아닌 Proxy Server로 갈 수 있고, Proxy에 cache가 없다면 Server와 다시 connection을 맺어야 하므로 host명이 필요함.
+
+ - Client가 requested file을 이미 갖고 있는가? 그렇다면 받은 지 얼마나 된 파일인지 알 수 있는가? 
+
+⇒ X. http msg엔 필드를 얼마든지 추가할 수 있음. `If-Modifed-Since` 라는 필드가 있다면 이미 받은 적이 있는 파일이 update되었는지 다시 한 번 request를 보낸 것. 서버는 updated 되지 않았다면 not-modified res를 보낼 것
+
+ - `Keep-Alive` ?
+
+⇒ **persistent HTTP 쓰려는 것. 115초동안 TCP Connection 끊지 말라는 뜻**
+
+## HTTP response message
+
+<img width="680" alt="스크린샷 2020-11-05 오후 3 56 12" src="https://user-images.githubusercontent.com/45806836/98207715-6faf5000-1f7f-11eb-8356-30dab7d14ac4.png">
+
+
+
+ - 200 OK
+
+⇒ Client가 요청한 content 줄 수 있다.
+
+ - Date, `Last-Modified` (중요)
+
+⇒ Date는 서버가 response msg를 보내느 시각, `Last-Modified`는 **Response msg에 전송되는 정보가 생성된 (혹은 마지막으로 업데이트 된) 시각**
+
+ - `Keep Alive` (중요)
+
+⇒`time out=10, max=100` **10초 안에 다시 요청하면 connection 유지, 100개 까지 연결을 끊지 않고 받을 수 있다.**  
+
+ - `Connection` (중요)
+
+⇒ 연결을 끊지 않고 Keep-Alive 해줄 수 있다. `Close` 라면 연결을 끊을 것.
+
+## TCP의 역할
+
+⇒ receiver의 buffer, router(in networks)'s output buffer 의 overflow 막아줌
+
+- loss control
+
+**Flow Control**: end-system receiver buffer의 overflow 현상을 막기 위해 receiver가 sender에게 현재 버퍼의 용량을 알려줌
+
+- inorder delivery
+
+**Congestion Control**: end systems 사이의 network에 있는 router의 output buffer(queue)에서 queueing delay를 넘어 overflow가 일어나지 않도록 제어
+
+## User-server state: cookies
+
+Ex. 수잔이 특정 PC에서 Internet을 사용. 처음으로 이커머스 사이트(서버) 방문
+
+→ 서버는 이 클라이언트에게 ID(관리측면) 할당. 브라우저에서 쿠키를 enable해놓으면 서버는 클라이언트를 ID로 관리
+
+<img width="660" alt="스크린샷 2020-11-05 오후 3 52 37" src="https://user-images.githubusercontent.com/45806836/98207379-eef05400-1f7e-11eb-8263-b871215dfe9e.png">
+
+1) **서버가** cookie를 initiate 해 `set-cookie` 라는 필드로 넣어 response
+
+2) 다음에 다시 요청할 때 cookie 값을 담아서 요청
+
+→ 서버는 해당 클라이언트를 cookie로 관리할 수 있음
+
+<img width="682" alt="스크린샷 2020-11-05 오후 3 52 54" src="https://user-images.githubusercontent.com/45806836/98207399-f9aae900-1f7e-11eb-855d-755cc7522aed.png">
+
+컴퓨터를 껐다 켜더라도 cookie값으로 다시 요청할 수 있음
+
+<img width="698" alt="스크린샷 2020-11-05 오후 3 53 17" src="https://user-images.githubusercontent.com/45806836/98207431-06c7d800-1f7f-11eb-863b-7cd9b8217a85.png">
+
+⇒ http의 stateless한 특성을 **cookie를 통해 state하게** 만들 수 있음!'
+
+---
+
+# Quiz
+
+(41) T/F 를 표시하시오.
+
+(a) Web 서비스를 지원하는 HTTP와, streaming 서비스를 제공하는 HTTP 모두 transport 계층에서 TCP를 사용한다.
+
+⇒ F. (저장된 파일을 streaming하는 서비스는 loss sensitive하여 TCP를 사용하지만, 실시간으로 streaming하는 서비스는 UDP를 사용한다)
+
+(b) 만일 내가 접근하는 홈페이지가 text와 하나의 오디오파일, 그리고 두개의 그림 파일을 포함하고 있다면, base HTML-file에는 총 3개의 URL을 포함하고 있다.
+
+⇒ T
+
+(c) 어떤 호스트 컴퓨터의 응용 프로세스(가령 P라고 하자)로 전달되는 메세지가 있다. 인터넷의 라우터들이 이 메시지를 P에게 전달하기 위해서 그 프로세스가 사용하는 port 번호를 알아야한다.
+
+⇒ F. 프로세스가 사용하는 port 번호를 알아야 하는 건 end system의 transport layer이다. (이 port 번호는 TCP segment의 헤더에 16bit로 표현되어 있다.) end system 사이의 network에 있는 라우터들에는 transport layer가 존재하지 않는다.
+
+(d) 컴퓨터 성능과 네트워크 카드(네트워크 링크 용량)을 무시한다고 가정할 때, UDP를 사용하는 5계층 프로토콜은 TCP를 사용하는 5계층 프로토콜보다 더 빨리 application message를 네트워크로 transmit 한다.
+
+⇒ T. UDP는 TCP가 제공하는 flow control, congestion control을 하지 않으므로 더 빨리 message를 전달할 수 있다.
+
+(e) 두 호스트 사이에 TCP가 connection set-up 한다는 의미는 중간 네트워크 라우터와는 무관한 작업이다.
+
+⇒ T. TCP connection set-up은 두 호스트의 transport layer에서 일어나는 작업이므로 transport layer가 존재하지 않는 중간 네트워크의 라우터와 무관하다.
+
+(f) HTTP는 기본적으로 서버가 클라이언트에 관한 정보를 기록하지 않는 stateless 프로토콜이나, Cookie 기능을 사용하면 stateful 하게 동작한다.
+
+⇒ T. 
+
+(g) Persistent HTTP를 사용하는 서버는 하나의 클라이언트에게 항상 단 한개의 TCP connection만 사용한다.
+
+⇒ T. Persistent HTTP를 사용하는 server는 response를 보낸 후에도 TCP connection을 close 하지 않아 어느 한 시점에 열려있는 socket의 수는 한 개이다. 따라서 항상 단 한 개의 TCP connection만 사용한다. :)
+
+(h) HTTP의 cookie는 클라이언트 호스트가 web browser에 사용여부를 설정할 수 있게 되어있다. 따라서 HTTP cookie ID는 HTTP client 호스트에 의해서 생성된다.
+
+⇒ F. 서버가 클라이언트에 대한 cookie를 초기 생성해 set-cookie라는 필드에 넣어 response 한다. 클라이언트는 이 cookie를 저장해 다음 요청 시 message field에 cookie를 담아 요청할 수 있다.
+
+(42) HTTP가 non-persistent with parallel TCP connection을 사용하는 서버로부터 13개의 URL을포함한 base-HTML을 받은 상황을 가정하자. 만일 (서버와 클라이언트) OS가 4개의 TCP의 connection을 (4개의 TCP socket을) 동시에 열도록 허용한다고 가정하면, **base-HTML을 가져오기 위해 소요된 2RTT외에 추가적으로 소요되는 시간은**? (**RTT로 표현**하시오.)
+
+⇒ 8RTTs. 동시에 4개의 TCP connection을 열 수 있다면 13개의 URL을 받는데 필요한 connection은 4개이다. 하나의 URL을 받는데 소요되는 시간은 2RTT이므로, 추가적으로 소요되는 시간은 8RTTs이다.
+
+(43) 위 (42)번 문제에서 서버가 해당 클라이언트에 **동시에 최대 몇 개의 TCP 연결(socket)을 여는가?**
+
+⇒ 4개. 서버와 클라이언트 모두 최대 4개의 소켓을 연다.
+
+(44) 어떤 클라이언트가 text 외에 10개의 object가 포함된 web page를 보고자 한다. 이때 HTTP가 non-persistent **with** parallel TCP connection을 사용하는 경우라면 **서로 다른 TCP socket이 몇 개나 열렸다(set-up) 닫히(close)는가?**
+
+⇒ n+1개. OS가 동시에 열도록 허용하는 소켓의 개수를 N개라고 한다면, base-html을 가져오기 위해 열리는 한 개의 소켓과 10개의 object를 가져오기 위해 n개의 socket이 열렸다 닫힌다. 이 때 OS가 base-html을 가져오기 위해 열리는 한 개의 소켓을 재사용하지 않는다고 가정한다. (?)
+
+→ 모두 11개 = base-HTML을 가져오기 위한 TCP 1 + 10개 object를 가져오기위해 별도로 열리는 TCP socket 각 10개
+
+with parallel이라는 것은 시간적 측면에서 동시에 열린다는 의미이지, TCP 열렸다 닫히는 과정(즉 횟수)는 without parallel과 동일합니다.
+
+(45) 어떤 클라이언트가 text 외에 10개의 object가 포함된 web page를 보고자 한다. 이때 HTTP가 non-persistent **without** parallel TCP connection을 사용하는 경우라면 **서로 다른 TCP socket이 몇 개나 열렸다(set-up) 닫히(close)는가?**
+
+⇒ 11개. base-html을 가져오기 위해 한 개의 socket이, 10개의 object를 가져오기 위해 10개의 socket이 열렸다 닫힌다. 이 때 OS가 base-html을 가져오기 위해 열리는 한 개의 소켓을 재사용하지 않는다고 가정한다. (?)
