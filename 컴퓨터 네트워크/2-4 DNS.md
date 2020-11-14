@@ -345,7 +345,8 @@ hostname으로 IP주소를 알고 싶을 때 사용
 
 recursive 방법은 **중간 DNS 서버들이 LDNS를 대신해서** 질의 응답을 한번씩 추가로 더 진행하게 되는데, root DNS 서버는 최상위 계층에 있기 때문에 root DNS 서버가 처리하게 되는 query수는 그 보다 하위 계층에 있는 TLD DNS 서버나 authoritative DNS 서버가 처리하는 query수보다 더 많아지기 때문이다.
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f3de32a7-1937-4793-9c42-5b5420aee97e/_2020-10-08__7.34.57.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f3de32a7-1937-4793-9c42-5b5420aee97e/_2020-10-08__7.34.57.png)
+<img width="572" alt="스크린샷 2020-11-14 오후 9 31 23" src="https://user-images.githubusercontent.com/45806836/99147035-bfe58b00-26c0-11eb-8eb2-c7d091d05cb3.png">
+
 
 (예를 들어 만일 하나의 root DNS 서버에 3개의 TLD 서버가 있고, 각 TDL 서버에 10개의 authoritative DNS 서버가 붙어있는 경우, 총 30개의 authoritative DNS 서버가있게된다. 이때 각 authoritative DNS 서버로 DNS query message가 가는 경우라면 각 authoritative DNS는 1회, 각 TLD 서버들은 10회, root DNS 서버는 30회의 req/res를 해야한다.)
 
