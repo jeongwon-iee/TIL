@@ -15,27 +15,22 @@ class MemoryMemberRepositoryTest {
 
     @AfterEach
     public void afterEach() {
-        repository.clearStore();
+        repository.clearAll();
     }
 
     @Test
     public void save() {
-        // testcase 생성
         Member member = new Member();
         member.setName("jeongwon-iee");
 
-        // 수행
         repository.save(member);
 
-        // 검증
         Member result = repository.findById(member.getId()).get();
         assertThat(result).isEqualTo(member);
-        // 기대: 저장했던 member가 find 했을 때 반환되어야 함.
     }
 
     @Test
     public void findByName() {
-        // testcase 생성
         Member member = new Member();
         member.setName("google");
         repository.save(member);
@@ -44,10 +39,8 @@ class MemoryMemberRepositoryTest {
         member1.setName("clova");
         repository.save(member1);
 
-        // 수행
         Member result = repository.findByName("google").get();
 
-        // 검증
         assertThat(result).isEqualTo(member);
     }
 
