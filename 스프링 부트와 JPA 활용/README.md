@@ -1,7 +1,7 @@
 
 ## 목차
 
-- 프로젝트 환경설정
+- [프로젝트 환경설정](https://github.com/jeongwon-iee/TIL/blob/master/%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20JPA%20%ED%99%9C%EC%9A%A9/01.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%ED%99%98%EA%B2%BD%20%EC%84%A4%EC%A0%95.md)
     - 프로젝트 생성
     - 라이브러리 살펴보기
     - View 환경 설정
