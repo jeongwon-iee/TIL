@@ -7,7 +7,7 @@
     - View 환경 설정
     - H2 데이터베이스 설치
     - JPA와 DB 설정, 동작확인
-- 도메인 분석 설계
+- [도메인 분석 설계](https://github.com/jeongwon-iee/TIL/blob/master/%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20JPA%20%ED%99%9C%EC%9A%A9/02.%20%EB%8F%84%EB%A9%94%EC%9D%B8%20%EB%B6%84%EC%84%9D%20%EC%84%A4%EA%B3%84.md)
     - 요구사항 분석
     - 도메인 모델과 테이블 설계
     - 엔티티 클래스 개발
