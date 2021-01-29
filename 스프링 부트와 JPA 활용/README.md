@@ -12,7 +12,7 @@
     - 도메인 모델과 테이블 설계
     - 엔티티 클래스 개발
     - 엔티티 설계시 주의점
-- 애플리케이션 구현 준비
+- [애플리케이션 구현 준비](https://github.com/jeongwon-iee/TIL/blob/master/%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20JPA%20%ED%99%9C%EC%9A%A9/03.%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B5%AC%ED%98%84%20%EC%A4%80%EB%B9%84.md)
     - 구현 요구사항
     - 애플리케이션 아키텍처
 - 회원 도메인 개발
