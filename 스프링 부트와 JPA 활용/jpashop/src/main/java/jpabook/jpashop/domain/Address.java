@@ -8,9 +8,9 @@ import javax.persistence.Embeddable;
 @Getter
 public class Address {
 
-    String city;
-    String street;
-    String zipcode;
+    private String city;
+    private String street;
+    private String zipcode;
 
     protected Address() {
     }

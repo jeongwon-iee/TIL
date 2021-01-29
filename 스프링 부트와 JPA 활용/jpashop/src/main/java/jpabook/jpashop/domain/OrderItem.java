@@ -1,17 +1,16 @@
 package jpabook.jpashop.domain;
 
-import jpabook.jpashop.domain.Item.Item;
+import jpabook.jpashop.domain.item.Item;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 
-import static javax.persistence.FetchType.*;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "order_item")
-@Getter
-@Setter
+@Getter @Setter
 public class OrderItem {
 
     @Id
@@ -29,4 +28,5 @@ public class OrderItem {
 
     private int orderPrice;
     private int count;
+
 }

@@ -16,13 +16,12 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "name")
     private String name;
 
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "order")
     private List<Order> orders = new ArrayList<>();
 
 }

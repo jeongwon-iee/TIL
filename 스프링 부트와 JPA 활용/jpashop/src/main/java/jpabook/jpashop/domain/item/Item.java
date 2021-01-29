@@ -1,4 +1,4 @@
-package jpabook.jpashop.domain.Item;
+package jpabook.jpashop.domain.item;
 
 import jpabook.jpashop.domain.Category;
 import lombok.Getter;
@@ -11,9 +11,8 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "dtype")
-@Getter
-@Setter
-public abstract class Item {
+@Getter @Setter
+public class Item {
 
     @Id
     @GeneratedValue
