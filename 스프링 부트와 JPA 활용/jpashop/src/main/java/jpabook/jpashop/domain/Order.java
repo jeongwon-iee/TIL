@@ -23,7 +23,7 @@ public class Order {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_Id")
     private Member member;
 
     @OneToMany(mappedBy = "order", cascade = ALL)
