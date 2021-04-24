@@ -16,7 +16,7 @@
 6. [컴포넌트 스캔](https://github.com/jeongwon-iee/TIL/blob/master/%EC%8A%A4%ED%94%84%EB%A7%81/2.%20%EC%8A%A4%ED%94%84%EB%A7%81%20%ED%95%B5%EC%8B%AC%20%EC%9B%90%EB%A6%AC/06.%20%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8%20%EC%8A%A4%EC%BA%94.md)
 7. [의존관계 자동 주입](https://github.com/jeongwon-iee/TIL/blob/master/%EC%8A%A4%ED%94%84%EB%A7%81/2.%20%EC%8A%A4%ED%94%84%EB%A7%81%20%ED%95%B5%EC%8B%AC%20%EC%9B%90%EB%A6%AC/07.%20%EC%9D%98%EC%A1%B4%EA%B4%80%EA%B3%84%20%EC%9E%90%EB%8F%99%20%EC%A3%BC%EC%9E%85.md)
 8. [빈 생명주기 콜백](https://github.com/jeongwon-iee/TIL/blob/master/Back-end/%EC%8A%A4%ED%94%84%EB%A7%81/2.%20%EC%8A%A4%ED%94%84%EB%A7%81%20%ED%95%B5%EC%8B%AC%20%EC%9B%90%EB%A6%AC/08.%20%EB%B9%88%20%EC%83%9D%EB%AA%85%EC%A3%BC%EA%B8%B0%20%EC%BD%9C%EB%B0%B1.md)  
-9. 빈 스코프
+9. [빈 스코프](https://github.com/jeongwon-iee/TIL/blob/master/Back-end/%EC%8A%A4%ED%94%84%EB%A7%81/2.%20%EC%8A%A4%ED%94%84%EB%A7%81%20%ED%95%B5%EC%8B%AC%20%EC%9B%90%EB%A6%AC/09.%20%ED%94%84%EB%A1%9C%ED%86%A0%ED%83%80%EC%9E%85%20%EC%8A%A4%EC%BD%94%ED%94%84%20-%20%EC%8B%B1%EA%B8%80%ED%86%A4%20%EB%B9%88%EA%B3%BC%20%ED%95%A8%EA%BB%98%20%EC%82%AC%EC%9A%A9%EC%8B%9C%20%EB%AC%B8%EC%A0%9C%EC%A0%90.md)
 10. 다음으로
 
 ## 🌱 목표
